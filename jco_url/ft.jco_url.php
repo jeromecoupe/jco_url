@@ -24,11 +24,11 @@ class Jco_url_ft extends EE_Fieldtype {
 	* --------------------------------------------------------------
 	*/
 	
-	/*Install: uses default uninstall method*/
+	//Install: uses default uninstall method
 	
-	/*Uninstall: uses default uninstall method*/
-	
-	/*
+	//Uninstall: uses default uninstall method
+		
+	/**
 	* Display field
 	* @access public
 	* @param string
@@ -46,7 +46,7 @@ class Jco_url_ft extends EE_Fieldtype {
 		
 	}
 	
-	/*
+	/**
 	* Regexp validation of URL + check http headers
 	*
 	* @access public
@@ -77,7 +77,7 @@ class Jco_url_ft extends EE_Fieldtype {
 		return TRUE;
 	}
 	
-	/*
+	/**
 	* Save data: prep url if people forgot the http:// bit
 	*
 	* @access public
@@ -98,7 +98,7 @@ class Jco_url_ft extends EE_Fieldtype {
 	* --------------------------------------------------------------
 	*/
 	
-	/*
+	/**
 	* Check if URL exists by checking http headers
 	*
 	* @access private
@@ -126,7 +126,7 @@ class Jco_url_ft extends EE_Fieldtype {
 		return ($http_code != 0) ? TRUE : FALSE;
 	}
 	
-	/*
+	/**
 	* Check URL syntax using regexp
 	*
 	* @access private
