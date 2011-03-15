@@ -1,24 +1,32 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
- * VZ URL Class
+ * Jco_url_ft Class
  *
- * @author    JŽr™me CoupŽ and Pierre-Vincent Ledoux
+ * @author    J&eacute;r&ocirc;me Coup&eacute; and Pierre-Vincent Ledoux
  * @copyright Copyright (c) 2011 La casa productions
- * @license   http://creativecommons.org/licenses/by-sa/3.0/ Attribution-Share Alike 3.0 Unported
+ * @license   http://creativecommons.org/licenses/by-sa/3.0/
  *
  */
 
 class Jco_url_ft extends EE_Fieldtype {
 
-	var $info = array(
+	public $info = array(
 		'name'		=> 'JCO URL',
 		'version'	=> '1.0'
 	);
 	
-	/*Uninstall: uses default uninstall method*/
 	
-	/*Save data uses default method*/
+	
+	/*
+	* --------------------------------------------------------------
+	* PUBLIC METHODS
+	* --------------------------------------------------------------
+	*/
+	
+	/*Install: uses default uninstall method*/
+	
+	/*Uninstall: uses default uninstall method*/
 	
 	/*
 	* Display field
@@ -47,13 +55,20 @@ class Jco_url_ft extends EE_Fieldtype {
 	*/
 	public function validate($data)
 	{
+		//Load Helpers and Language files
+		$this->EE->load->helper('url');
 		$this->EE->lang->loadfile('jco_url');
 		
+		//sanitise URL with URL helper (add http:// if not there)
+		$data = prep_url($data);
+		
+		//syntax check using regexp
 		if (!$this->_url_check_syntax($data))
 		{
 			return lang('jco_url_badsyntax');
 		}
 		
+		//check if page exists by checking returned http headers
 		if (!$this->_url_check_headers($data))
 		{
 			return lang('jco_url_doesnotexist');
@@ -63,12 +78,33 @@ class Jco_url_ft extends EE_Fieldtype {
 	}
 	
 	/*
+	* Save data: prep url if people forgot the http:// bit
+	*
+	* @access public
+	* @param string
+	* @return string
+	*/
+	
+	public function save($data)
+	{
+		//sanitise URL with URL helper (add http:// if not there)
+		$data = prep_url($data);
+		return $data;
+	}
+	
+	/*
+	* --------------------------------------------------------------
+	* PRIVATE METHODS
+	* --------------------------------------------------------------
+	*/
+	
+	/*
 	* Check if URL exists by checking http headers
 	*
 	* @access private
 	* @param string
 	* @return bool
-	* @author: Pierre-Vincent Ledoux (thanks, mate !!!)
+	* @author: Pierre-Vincent Ledoux (thanks, mate! These recursive wierd arrays of headers were driving me up the wall)
 	*/
 	private function _url_check_headers($url)
 	{
