@@ -13,7 +13,7 @@ class Jco_url_ft extends EE_Fieldtype {
 
 	public $info = array(
 		'name'		=> 'JCO URL',
-		'version'	=> '1.0'
+		'version'	=> '1.1'
 	);
 	
 	
