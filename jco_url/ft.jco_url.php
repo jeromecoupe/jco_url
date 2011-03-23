@@ -38,8 +38,6 @@ class Jco_url_ft extends EE_Fieldtype {
 	{
 		$data = ($data == '') ? 'http://' : $data;
 		
-		echo "<p> SETTINGS".var_dump($this->settings)."</p>";
-		
 		return form_input(array(
 			'name'	=> $this->field_name,
 			'id'	=> $this->field_id,
