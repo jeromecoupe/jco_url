@@ -38,16 +38,18 @@ class Jco_url_ft extends EE_Fieldtype {
 	{
 		$data = ($data == '') ? 'http://' : $data;
 		
+		echo "<p> SETTINGS".var_dump($this->settings)."</p>";
+		
 		return form_input(array(
 			'name'	=> $this->field_name,
 			'id'	=> $this->field_id,
 			'value'	=> $data
 		));
-		
 	}
 	
 	/**
 	* Regexp validation of URL + check http headers
+	* Will validate if file mandatory OR if value is different than "http://"
 	*
 	* @access public
 	* @param string
@@ -55,30 +57,39 @@ class Jco_url_ft extends EE_Fieldtype {
 	*/
 	public function validate($data)
 	{
-		//Load Helpers and Language files
-		$this->EE->load->helper('url');
-		$this->EE->lang->loadfile('jco_url');
-		
-		//sanitise URL with URL helper (add http:// if not there)
-		$data = prep_url($data);
-		
-		//syntax check using regexp
-		if (!$this->_url_check_syntax($data))
+		//check if field is mandatory OR if value != "http://"
+		if ($this->settings['field_required'] == "y" OR $data != "http://")
 		{
-			return lang('jco_url_badsyntax');
+			//Load Helpers and Language files
+			$this->EE->load->helper('url');
+			$this->EE->lang->loadfile('jco_url');
+			
+			//sanitise URL with URL helper (add http:// if not there)
+			$data = prep_url($data);
+			
+			//syntax check using regexp
+			if (!$this->_url_check_syntax($data))
+			{
+				return lang('jco_url_badsyntax');
+			}
+			
+			//check if page exists by checking returned http headers
+			if (!$this->_url_check_headers($data))
+			{
+				return lang('jco_url_doesnotexist');
+			}
+			
+			return TRUE;
 		}
-		
-		//check if page exists by checking returned http headers
-		if (!$this->_url_check_headers($data))
+		else
 		{
-			return lang('jco_url_doesnotexist');
+			return TRUE;
 		}
-		
-		return TRUE;
 	}
 	
 	/**
 	* Save data: prep url if people forgot the http:// bit
+	* Will save blank value if file is not mandatory and if value == "http://"
 	*
 	* @access public
 	* @param string
@@ -87,9 +98,18 @@ class Jco_url_ft extends EE_Fieldtype {
 	
 	public function save($data)
 	{
-		//sanitise URL with URL helper (add http:// if not there)
-		$data = prep_url($data);
-		return $data;
+		//check if field is mandatory OR if value != "http://"
+		if ($this->settings['field_required'] == "y" OR $data != "http://")
+		{
+			//sanitise URL with URL helper (add http:// if not there)
+			$data = prep_url($data);
+			return $data;
+		}
+		else
+		{
+			$data = NULL;
+			return $data;
+		}
 	}
 	
 	/*
